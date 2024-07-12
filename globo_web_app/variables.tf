@@ -27,10 +27,16 @@ variable "enable_dns_hostnames" {
   default = true
 }
 
-variable "subnet_cidr_block" {
+variable "subnet1_cidr_block" {
   type        = string
   description = "subnet cidr block"
   default     = "10.0.0.0/24"
+}
+
+variable "subnet2_cidr_block" {
+  type        = string
+  description = "subnet cidr block"
+  default     = "10.0.0.0/25"
 }
 
 variable "subnet_map_public_ip_on_launch" {
