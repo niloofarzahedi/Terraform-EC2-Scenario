@@ -34,7 +34,7 @@ resource "aws_internet_gateway" "app" {
 }
 
 resource "aws_subnet" "public_subnet1" {
-  cidr_block              = var.subnet1_cidr_block
+  cidr_block              = var.subnets_cidr_block[0]
   vpc_id                  = aws_vpc.app.id
   map_public_ip_on_launch = var.subnet_map_public_ip_on_launch
   tags                    = local.common_tags
@@ -42,7 +42,7 @@ resource "aws_subnet" "public_subnet1" {
 }
 
 resource "aws_subnet" "public_subnet2" {
-  cidr_block              = var.subnet2_cidr_block
+  cidr_block              = var.subnets_cidr_block[1]
   vpc_id                  = aws_vpc.app.id
   map_public_ip_on_launch = var.subnet_map_public_ip_on_launch
   tags                    = local.common_tags
@@ -62,6 +62,11 @@ resource "aws_route_table" "app" {
 
 resource "aws_route_table_association" "app_subnet1" {
   subnet_id      = aws_subnet.public_subnet1.id
+  route_table_id = aws_route_table.app.id
+}
+
+resource "aws_route_table_association" "app_subnet2" {
+  subnet_id      = aws_subnet.public_subnet2.id
   route_table_id = aws_route_table.app.id
 }
 
