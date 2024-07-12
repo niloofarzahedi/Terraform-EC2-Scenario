@@ -1,6 +1,6 @@
-output "aws_instance_dns_name" {
-  value       = "https://${aws_instance.nginx1.public_dns}"
-  description = "dns of server"
+output "aws_alb_dns_name" {
+  value       = "http://${aws_lb.nginx_alb.dns_name}"
+  description = "dns of application load balancer"
 }
 
 output "public_subnet1_availability_zone" {

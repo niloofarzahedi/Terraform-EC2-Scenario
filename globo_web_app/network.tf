@@ -71,9 +71,9 @@ resource "aws_route_table_association" "app_subnet2" {
 }
 
 # SECURITY GROUPS #
-# Nginx security group 
-resource "aws_security_group" "nginx_sg" {
-  name   = "nginx_sg"
+#ALB security group
+resource "aws_security_group" "ALB_sg" {
+  name   = "alb_sg"
   vpc_id = aws_vpc.app.id
 
   # HTTP access from anywhere
@@ -82,6 +82,28 @@ resource "aws_security_group" "nginx_sg" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # outbound internet access
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = local.common_tags
+}
+# Nginx security group 
+resource "aws_security_group" "nginx_sg" {
+  name   = "nginx_albsg"
+  vpc_id = aws_vpc.app.id
+
+  # HTTP access from alb
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr_block]
   }
 
   # outbound internet access
