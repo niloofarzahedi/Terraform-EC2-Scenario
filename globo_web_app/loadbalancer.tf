@@ -1,3 +1,6 @@
+# aws_elb_service_account
+
+data "aws_elb_service_account" "root" {}
 #alb 
 resource "aws_lb" "nginx_alb" {
   name               = "nginx-alb"
