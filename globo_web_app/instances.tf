@@ -13,13 +13,19 @@ resource "aws_instance" "nginx1" {
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
   tags                   = local.common_tags
   # Attach the instance profile to your EC2 instance
-  iam_instance_profile=aws_iam_instance_profile.instance_profile.name
-  user_data              = <<EOF
+  iam_instance_profile = aws_iam_instance_profile.nginx_profile.name
+  #this tells terraform to wait for this role policy to finish creation and then create this ec2 instance
+  #this is not a ec2 attr, this is a terraform meta argument
+  depends_on = [aws_iam_role_policy.allow_s3_all]
+  user_data  = <<EOF
 #! /bin/bash
 sudo amazon-linux-extras install -y nginx1
 sudo service nginx start
+aws s3 cp s3://${aws_s3_bucket.s3-bucket.id}/website/index.html /home/ec2-user/index.html
+aws s3 cp s3://${aws_s3_bucket.s3-bucket.id}/website/Globo_logo_Vert.png /home/ec2-user/Globo_logo_Vert.png
 sudo rm /usr/share/nginx/html/index.html
-echo '<html><head><title>Taco Team Server1</title></head><body style=\"background-color:#1F778D\"><p style=\"text-align: center;\"><span style=\"color:#FFFFFF;\"><span style=\"font-size:28px;\">You did it! Have a &#127790;</span></span></p></body></html>' | sudo tee /usr/share/nginx/html/index.html
+sudo cp /home/ec2-user/index.html /usr/share/nginx/html/index.html
+sudo cp /home/ec2-user/Globo_logo_Vert.png /usr/share/nginx/html/Globo_logo_Vert.png
 EOF
 
 }
@@ -30,13 +36,19 @@ resource "aws_instance" "nginx2" {
   subnet_id              = aws_subnet.public_subnet2.id
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
   tags                   = local.common_tags
-  iam_instance_profile=aws_iam_instance_profile.instance_profile.name
-  user_data              = <<EOF
+  iam_instance_profile   = aws_iam_instance_profile.nginx_profile.name
+  #this tells terraform to wait for this role policy to finish creation and then create this ec2 instance
+  #this is not a ec2 attr, this is a terraform meta argument
+  depends_on = [aws_iam_role_policy.allow_s3_all]
+  user_data  = <<EOF
 #! /bin/bash
 sudo amazon-linux-extras install -y nginx1
 sudo service nginx start
+aws s3 cp s3://${aws_s3_bucket.s3-bucket.id}/website/index.html /home/ec2-user/index.html
+aws s3 cp s3://${aws_s3_bucket.s3-bucket.id}/website/Globo_logo_Vert.png /home/ec2-user/Globo_logo_Vert.png
 sudo rm /usr/share/nginx/html/index.html
-echo '<html><head><title>Taco Team Server2</title></head><body style=\"background-color:#1F778D\"><p style=\"text-align: center;\"><span style=\"color:#FFFFFF;\"><span style=\"font-size:28px;\">You did it! Have a &#127790;</span></span></p></body></html>' | sudo tee /usr/share/nginx/html/index.html
+sudo cp /home/ec2-user/index.html /usr/share/nginx/html/index.html
+sudo cp /home/ec2-user/Globo_logo_Vert.png /usr/share/nginx/html/Globo_logo_Vert.png
 EOF
 
 }
