@@ -1,9 +1,3 @@
-variable "aws_region" {
-  type        = string
-  description = "aws region name"
-  default     = "us-east-1"
-}
-
 variable "vpc_cidr_block" {
   type        = string
   description = "VPC cidr block"
