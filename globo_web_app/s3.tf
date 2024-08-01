@@ -45,17 +45,11 @@ resource "aws_s3_bucket_policy" "web_bucket" {
 }
     POLICY
 }
-#aws_s3_object
-resource "aws_s3_object" "website" {
-  bucket = aws_s3_bucket.s3-bucket.id
-  key    = "/website/index.html"
-  source = "./website/index.html"
-  tags   = local.common_tags
-}
-#aws_s3_object
-resource "aws_s3_object" "pic" {
-  bucket = aws_s3_bucket.s3-bucket.id
-  key    = "/website/Globo_logo_Vert.png"
-  source = "./website/Globo_logo_Vert.png"
+#aws_s3_objects
+resource "aws_s3_object" "web-objects" {
+  for_each = local.website_content
+  bucket = aws_s3_bucket.s3-bucket.bucket
+  key    = each.value
+  source = "${path.root}/${each.value}"
   tags   = local.common_tags
 }
