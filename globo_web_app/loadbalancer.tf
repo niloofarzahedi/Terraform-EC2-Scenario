@@ -6,7 +6,7 @@ resource "aws_lb" "nginx_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.ALB_sg.id]
-  subnets            = aws_subnet.public_subnets
+  subnets            = aws_subnet.public_subnets[*].id
   #because depends_on expect a list of resources we put bruckets around it.
   depends_on = [aws_s3_bucket_policy.web_bucket]
   #if you set this to True, terraform cannot destroy it
@@ -16,7 +16,7 @@ resource "aws_lb" "nginx_alb" {
     prefix  = "alb-logs"
     enabled = true
   }
-  tags = local.common_tags
+  tags = merge(local.common_tags,{Name="${local.prefix}"})
 }
 #lb target group
 resource "aws_lb_target_group" "nginx_alb_target_group" {
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "nginx_alb_target_group" {
   port     = "80"
   protocol = "HTTP"
   vpc_id   = aws_vpc.app.id
-  tags     = local.common_tags
+  tags     = merge(local.common_tags,{Name="${local.prefix}"})
 }
 #lb listener
 resource "aws_lb_listener" "nginx_alb_listener" {
